@@ -1,52 +1,59 @@
 from flask import Flask, render_template, request, jsonify
 import pickle
-import os
 import cv2
 import numpy as np
+import os
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
+UPLOAD_FOLDER = os.path.join('static', 'uploads')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Load the gender prediction model
-with open("data/gender_model.pkl", "rb") as f:
+# Load trained model
+model_path = os.path.join("data", "gender_model.pkl")
+with open(model_path, "rb") as f:
     model = pickle.load(f)
 
-# Route for main page
+# Routes
 @app.route('/')
 def index():
-    return render_template("index.html")
+    return render_template('index.html')
 
-# Route for image upload and prediction
 @app.route('/predict', methods=['POST'])
 def predict():
     if 'image' not in request.files:
-        return jsonify({'error': 'No image uploaded'})
+        return jsonify({'error': 'No file uploaded'})
 
     file = request.files['image']
-
     if file.filename == '':
         return jsonify({'error': 'No selected file'})
 
-    # Save uploaded image
-    upload_folder = os.path.join(app.static_folder, 'uploads')
-    os.makedirs(upload_folder, exist_ok=True)
-    file_path = os.path.join(upload_folder, file.filename)
-    file.save(file_path)
+    filename = secure_filename(file.filename)
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(filepath)
 
-    # Read image using OpenCV
-    image = cv2.imread(file_path, cv2.IMREAD_GRAYSCALE)
-    if image is None:
-        return jsonify({'error': 'Invalid image format'})
+    # Process image
+    img = cv2.imread(filepath, cv2.IMREAD_GRAYSCALE)
+    if img is None:
+        return jsonify({'error': 'Image not readable'})
+    img = cv2.resize(img, (100, 100)).flatten().reshape(1, -1)
 
-     # Resize and flatten the image for prediction
-    image = cv2.resize(image, (100, 100))  # Match your model training size
-    image = image.flatten().reshape(1, -1)
+    # Predict
+    prediction = model.predict(img)[0]
+    gender = 'Male' if prediction == 0 else 'Female'
 
-    # Predict gender
-    prediction = model.predict(image)[0]
-    gender = 'Male' if prediction == 1 else 'Female'
+    # Key features (optional, dummy values)
+    features = []
+    if gender == 'Male':
+        features = ['Square jawline', 'Prominent brow ridge', 'Thicker eyebrows']
+    else:
+        features = ['Round jawline', 'Softer facial features', 'Thinner eyebrows']
 
-    return jsonify({'gender': gender, 'image_path': f'static/uploads/{file.filename}'})
+    return jsonify({
+        'gender': gender,
+        'filename': filename,
+        'features': features
+    })
 
-# Run the app
 if __name__ == '__main__':
     app.run(debug=True)

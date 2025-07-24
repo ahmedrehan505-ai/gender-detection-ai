@@ -1,24 +1,26 @@
+import os
 import cv2
-import numpy as np
-import joblib
+import pickle
 
-# Load the trained model
-model = joblib.load("gender_model.pkl")
+# Load trained model
+with open("data/gender_model.pkl", "rb") as f:
+    model = pickle.load(f)
 
-# Define test image path
-image_path = "test_images/test1.jpg"
+# Folder containing test images
+test_folder = "test_images"
 
-# Load and preprocess image
-img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-if img is None:
-    print("❌ Failed to load image. Check path.")
-    exit()
+# Loop through each image in the test folder
+for filename in os.listdir(test_folder):
+    path = os.path.join(test_folder, filename)
+    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+    if img is None:
+        print(f" Skipping invalid image: {filename}")
+        continue
 
-img = cv2.resize(img, (100, 100))
-img = img.flatten().reshape(1, -1)
+    img = cv2.resize(img, (100, 100))
+    img_flatten = img.flatten().reshape(1, -1)
 
-# Predict gender
-prediction = model.predict(img)[0]
-gender = "Male" if prediction == 0 else "Female"
+    prediction = model.predict(img_flatten)[0]
 
-print(f"Predicted Gender: {gender}")
+    label = "Male" if prediction == 0 else "Female"
+    print(f" {filename} -> Predicted: {label}")
