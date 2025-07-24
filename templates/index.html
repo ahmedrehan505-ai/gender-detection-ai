@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Gender Detector | Accurate Face Analysis</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://media.istockphoto.com/id/504566555/photo/video-camera-lens.jpg?s=612x612&w=0&k=20&c=8sypA4NlKI5U37P32WVo-XTWqpJe6beZz3aJ5G4K-Lk=">
+    <meta name="description" content="Advanced AI-powered gender detection from facial features">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo-container">
+                <img src="https://media.istockphoto.com/id/504566555/photo/video-camera-lens.jpg?s=2048x2048&w=is&k=20&c=e34msqhhwObEmm8TTWiCC7MCwXWpKqAyntgjFbAGkgA=" alt="Gender Detector Logo" class="logo">
+                <h1>AI Gender Detector</h1>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary">Docs</button>
+                <button class="btn btn-primary">API</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="hero-card">
+                <div class="hero-text">
+                    <h2>Instant Gender Detection</h2>
+                    <p>Upload an image or use your camera to detect gender with our advanced AI technology</p>
+                </div>
+                <div class="hero-image">
+                    <!-- Removed the camera lens image that was here -->
+                    <img src="https://media.istockphoto.com/id/504566555/photo/video-camera-lens.jpg?s=2048x2048&w=is&k=20&c=e34msqhhwObEmm8TTWiCC7MCwXWpKqAyntgjFbAGkgA="alt="AI Analysis Illustration">
+                </div>
+            </div>
+
+            <!-- Rest of your HTML remains exactly the same -->
+            <div class="detection-card">
+                <div class="tabs">
+                    <button class="tab active" data-tab="upload">Upload Image</button>
+                    <button class="tab" data-tab="camera">Use Camera</button>
+                </div>
+
+                <div class="tab-content active" id="upload-tab">
+                    <div class="upload-area" id="drop-zone">
+                        <div class="upload-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <p>Drag & drop an image here or</p>
+                        <input type="file" id="file-input" accept="image/*" style="display: none;">
+                        <button class="btn btn-outline" id="browse-btn">Browse Files</button>
+                        <p class="small-text">Supports JPG, PNG up to 5MB</p>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="camera-tab">
+                    <div class="camera-container">
+                        <video id="camera-feed" autoplay playsinline></video>
+                        <canvas id="camera-canvas" style="display: none;"></canvas>
+                        <div class="camera-controls">
+                            <button id="start-camera" class="btn btn-primary">
+                                Start Camera
+                            </button>
+                            <button id="capture-btn" class="btn btn-primary" disabled>
+                                Capture
+                            </button>
+                            <button id="retry-btn" class="btn btn-outline" disabled>
+                                Retry
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-container" id="results" style="display: none;">
+                    <div class="result-header">
+                        <h3>Analysis Results</h3>
+                        <div class="confidence-badge">
+                            <span id="confidence-value">92%</span> Confidence
+                        </div>
+                    </div>
+                    <div class="result-content">
+                        <div class="gender-display">
+                            <span id="gender-result">Male</span>
+                        </div>
+                        <div class="image-preview">
+                            <img id="analyzed-image" src="" alt="Analyzed Image">
+                        </div>
+                        <div class="features-list">
+                            <h4>Key Features Detected:</h4>
+                            <ul id="features-detected">
+                                <li>Square jawline</li>
+                                <li>Prominent brow ridge</li>
+                                <li>Thicker eyebrows</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-cards">
+                <div class="info-card">
+                    <h3>How It Works</h3>
+                    <p>Our AI analyzes 68 facial landmarks using deep learning models trained on diverse datasets to predict gender with high accuracy.</p>
+                </div>
+                <div class="info-card">
+                    <h3>Technology</h3>
+                    <p>Powered by TensorFlow.js with a custom CNN architecture optimized for real-time gender classification in the browser.</p>
+                </div>
+                <div class="info-card">
+                    <h3>Privacy</h3>
+                    <p>All processing happens locally in your browser. No images are uploaded to our servers unless you choose cloud processing.</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">API Documentation</a>
+                </div>
+                <div class="footer-contact">
+                    <p>Contact: <a href="mailto:ahmedrehan300107@gmail.com">ahmedrehan300107@gmail.com</a></p>
+                    <p>Developed by M. Ahmed Rehan</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>
