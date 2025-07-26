@@ -2,7 +2,7 @@ import os
 import cv2
 import numpy as np
 from sklearn.svm import SVC
-import pickle
+import joblib
 import matplotlib.pyplot as plt
 
 def load_images(folder, label):
@@ -13,7 +13,7 @@ def load_images(folder, label):
         img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
         if img is None:
             continue
-        img = cv2.resize(img, (100, 100))
+        img = cv2.resize(img, (100, 100)).astype('float32') / 255.0  # normalize
         images.append(img.flatten())
         labels.append(label)
     return images, labels
@@ -46,15 +46,14 @@ female_images, female_labels = load_images("data/female", 1) # 1 = Female
 X = np.array(male_images + female_images)
 y = np.array(male_labels + female_labels)
 
-print(" Training data shape:", X.shape)
+print("Training data shape:", X.shape)
 
 # Train the model
-model = SVC(kernel='linear', probability=True)
+model = SVC(kernel='linear', probability=True, random_state=42)
 model.fit(X, y)
 
-# Save the model
+# Save the model using joblib
 model_path = "data/gender_model.pkl"
-with open(model_path, "wb") as f:
-    pickle.dump(model, f)
+joblib.dump(model, model_path)
 
-print(f" Model trained and saved as {model_path}")
+print(f"Model trained and saved as {model_path}")
