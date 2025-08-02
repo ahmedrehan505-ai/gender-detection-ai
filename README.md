@@ -86,9 +86,4 @@ Edit
 
 ---
 
-Would you like me to:
-- Create and upload a `requirements.txt`?
-- Add `.gitignore`?
-- Add a live deployment link (if you plan to host it online)?
 
-Let me know and I’ll help you finish it professionally!
